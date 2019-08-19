@@ -1,0 +1,30 @@
+{
+  "name": "online-doctor",
+  "version": "0.1.0",
+  "private": true,
+  "// If You want to install mdbreact from our GitLab repository, please replace './mdbreact-4.8.7.tgz' with gitURL provided here ->": "git+https://oauth2:<YOUR-TOKEN-GOES-HERE>@git.mdbootstrap.com/mdb/react/re-pro.git",
+  "dependencies": {
+    "mdbreact": "./mdbreact-4.8.7.tgz",
+    "react": "^16.5.0",
+    "react-dom": "^16.5.0",
+    "react-scripts": "^3.1.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "rename": "renamer --find App-clear.js --replace App.js ./src/App-clear.js",
+    "remove-demo": "rimraf ./src/font ./src/img ./src/pages ./src/Routes.js ./src/App.js && npm run rename"
+  },
+  "devDependencies": {
+    "renamer": "^1.0.0",
+    "rimraf": "^2.6.2"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}
