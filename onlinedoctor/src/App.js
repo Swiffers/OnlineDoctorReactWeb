@@ -7,10 +7,22 @@ import {
   Collapse,
   NavItem,
   Footer,
-  NavLink
+  NavLink,
+  Dropdown, 
+  DropdownToggle, 
+  DropdownMenu,
+  DropdownItem,
+  Fa,
+  Button,
+  Modal,
+  ModalBody,
+  ModalHeader,
+  ModalFooter,
+  Input
 } from "mdbreact";
 import { BrowserRouter as Router } from "react-router-dom";
 import "./index.css";
+import firebase from './firebase';
 
 import Routes from "./Routes";
 
@@ -18,7 +30,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      collapseID: ""
+      collapseID: "",
+      modal1: false,
+      modal2: false,
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
     };
   }
 
@@ -29,6 +47,57 @@ class App extends Component {
 
   closeCollapse = collapseID => () =>
     this.state.collapseID === collapseID && this.setState({ collapseID: "" });
+
+  toggle(nr) {
+    let modalNumber = "modal" + nr;
+    this.setState({
+      [modalNumber]: !this.state[modalNumber]
+    });
+  }
+
+  handleChangeFirstName(event) {
+    this.setState({first_name: event.target.value})
+  }
+
+  handleChangeLastName(event) {
+    this.setState({last_name: event.target.value})
+  }
+
+  handleChangeEmail(event) {
+    this.setState({email: event.target.value})
+  }
+
+  handleChangePassword(event) {
+    this.setState({password: event.target.value})
+  }
+
+  handleSignUpSubmit = (event) => {
+    event.preventDefault();
+    const { email, password } = this.state;
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((user) => {
+        this.props.history.push('/');
+      })
+      .catch((error) => {
+        this.setState({ error: error });
+      });
+  };
+
+  handleSignInSubmit = (event) => {
+    event.preventDefault();
+    const { email, password } = this.state;
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((user) => {
+        this.props.history.push('/');
+      })
+      .catch((error) => {
+        this.setState({ error: error });
+      });
+  };
 
   render() {
     const overlay = (
@@ -48,7 +117,7 @@ class App extends Component {
                 alt=""
                 height="20"
               />{" "}
-              MDB React
+              OnlineDoctor
             </NavbarBrand>
             <NavbarToggler
               onClick={this.toggleCollapse("mainNavbarCollapse")}
@@ -66,6 +135,15 @@ class App extends Component {
                     onClick={this.closeCollapse("mainNavbarCollapse")}
                   >
                     Home
+                  </NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink
+                    exact
+                    to="/appointment"
+                    onClick={this.closeCollapse("mainNavbarCollapse")}
+                  >
+                    Appointment
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -141,6 +219,49 @@ class App extends Component {
                     Sections
                   </NavLink>
                 </NavItem>
+                <NavItem>
+                  <NavLink className="waves-effect waves-light d-flex align-items-center" to="#!">1<Fa icon="envelope" className="ml-1" /></NavLink>
+                </NavItem>
+                <NavItem>
+                  <Dropdown>
+                    <DropdownToggle nav caret>
+                      <Fa icon="user" className="mr-1" />Patient Portal
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-default" right>
+                      <DropdownItem header>
+                        Patient Portal
+                      </DropdownItem>
+                      <DropdownItem onClick={() => this.toggle(1)}>
+                        Login
+                      </DropdownItem>
+                      <DropdownItem onClick={() => this.toggle(2)}>
+                        Register
+                      </DropdownItem>
+                      <DropdownItem onClick={() => this.toggle(1)}>
+                        Logout
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </NavItem>
+                <NavItem>
+                  <Dropdown>
+                    <DropdownToggle nav caret>
+                      <Fa icon="user" className="mr-1" />Provider Portal
+                    </DropdownToggle>
+                    <DropdownMenu className="dropdown-default" right>
+                      <DropdownItem header>
+                      Provider Portal
+                      </DropdownItem>
+                      <DropdownItem onClick={() => this.toggle(1)}>
+                        Login
+                      </DropdownItem>
+                      <DropdownItem onClick={() => this.toggle(1)}>
+                        Logout
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </NavItem>
+
                 {/* PRO-END */}
               </NavbarNav>
             </Collapse>
@@ -148,12 +269,108 @@ class App extends Component {
           {this.state.collapseID && overlay}
           <main style={{ marginTop: "4rem" }}>
             <Routes />
+            <Modal 
+              isOpen={this.state.modal1} 
+              toggle={() => this.toggle(1)}
+              className="modal-notify modal-warning white-text"
+            >
+              <ModalHeader
+                className="text-center"
+                titleClass="w-100 font-weight-bold"
+                toggle={() => this.toggle(1)}
+              >
+                Sign in
+              </ModalHeader>
+              <ModalBody>
+                <form className="mx-3 grey-text" onSubmit={this.handleSignInSubmit}>
+                  <Input
+                    label="Type your email"
+                    icon="envelope"
+                    group
+                    type="email"
+                    validate
+                    error="wrong"
+                    success="right"
+                  />
+                  <Input
+                    label="Type your password"
+                    icon="lock"
+                    group
+                    type="password"
+                    validate
+                  />
+                </form>
+              </ModalBody>
+              <ModalFooter className="justify-content-center">
+                <Button onClick={() => this.toggle(1)}>Login</Button>
+              </ModalFooter>
+            </Modal>
+            <Modal isOpen={this.state.modal2} toggle={() => this.toggle(2)}>
+            <ModalHeader
+              className="text-center"
+              titleClass="w-100 font-weight-bold"
+              toggle={() => this.toggle(2)}
+            >
+              Sign up
+            </ModalHeader>
+            <ModalBody>
+              <form className="mx-3 grey-text" onSubmit={this.handleSignUpSubmit}>
+                <Input
+                  label="Your first name"
+                  icon="user"
+                  group
+                  type="text"
+                  validate
+                  error="wrong"
+                  success="right"
+                  value={this.state.first_name} 
+                  onChange={this.handleChangeFirstName.bind(this)}
+                />
+                <Input
+                  label="Your last name"
+                  icon="user"
+                  group
+                  type="text"
+                  validate
+                  error="wrong"
+                  success="right"
+                  value={this.state.last_name} 
+                  onChange={this.handleChangeLastName.bind(this)}
+                />
+                <Input
+                  label="Your email"
+                  icon="envelope"
+                  group
+                  type="email"
+                  validate
+                  error="wrong"
+                  success="right"
+                  value={this.state.email} 
+                  onChange={this.handleChangeEmail.bind(this)}
+                />
+                <Input
+                  label="Your password"
+                  icon="lock"
+                  group
+                  type="password"
+                  validate
+                  value={this.state.password} 
+                  onChange={this.handleChangePassword.bind(this)}
+                />
+              </form>
+            </ModalBody>
+            <ModalFooter className="justify-content-center">
+              <Button color="deep-orange" onClick={() => this.toggle(2)}>
+                SIGN UP
+              </Button>
+            </ModalFooter>
+          </Modal>
           </main>
 
           <Footer color="indigo">
             <p className="footer-copyright mb-0 py-3 text-center">
               &copy; {new Date().getFullYear()} Copyright:{" "}
-              <a href="https://www.MDBootstrap.com"> MDBootstrap.com </a>
+              <a href="https://github.com/yuyangchen0122?tab=repositories"> Yuyang (Vince) Chen </a>
             </p>
           </Footer>
         </div>

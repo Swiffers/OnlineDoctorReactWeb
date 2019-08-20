@@ -9,6 +9,9 @@ import ModalsNavPage from "./pages/ModalsNavPage";
 import AdvancedNavPage from "./pages/AdvancedNavPage";
 import ComponentsNavPage from "./pages/ComponentsNavPage";
 
+// Online Doctor
+import AppointmentPage from './pages/AppointmentPage';
+
 // FREE
 import AnimationPage from "./pages/AnimationPage";
 import AlertPage from "./pages/AlertPage";
@@ -120,6 +123,9 @@ class Routes extends React.Component {
         <Route exact path="/tables" component={TablesNavPage} />
         <Route exact path="/modals" component={ModalsNavPage} />
         <Route exact path="/addons" component={AddonsNavPage} />
+
+        {/* Online Doctor */}
+        <Route path="/appointment" component={AppointmentPage} />
 
         {/* FREE */}
         <Route path="/css/animations" component={AnimationPage} />

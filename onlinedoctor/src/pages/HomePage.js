@@ -26,7 +26,7 @@ class HomePage extends React.Component {
             >
               <CardBody>
                 <h2 className="h2-responsive mb-4">
-                  <strong>MDB React Demo App</strong>
+                  <strong>Online Doctor Provider Portal</strong>
                 </h2>
                 <p>React Bootstrap with Material Design</p>
                 <p className="pb-4">
